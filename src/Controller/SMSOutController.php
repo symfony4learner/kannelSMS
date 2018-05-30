@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Service\SendMessage;
 
 /**
- * @Route("/")
+ * @Route("/sms_out")
  */
 class SMSOutController extends Controller
 {
@@ -29,22 +29,30 @@ class SMSOutController extends Controller
      */
     public function new(Request $request, SendMessage $sendMessage): Response
     {
+        $contacts = $request->query->get('contacts') ? $request->query->get('contacts') : "";
+        if($contacts == "all_contacts"){
+            $to = $this->fetchAllContacts();
+        } else {
+            $to = $contacts;
+        }
         $sMSOut = new SMSOut();
+        $sMSOut->setSendTo($to);
         $form = $this->createForm(SMSOutType::class, $sMSOut);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $form_data = $form->getData();
             // var_dump($form_data);
-            $phone_no = $form_data->getSendTo();
+            $contacts = $form_data->getSendTo();
             $message = $form_data->getMessage();
+            $now = new \DateTime("now");
 
-            $send = $sendMessage->sendMessage($phone_no, $message);
+            $send = $sendMessage->sendMessage($contacts, $message);
             $this->addFlash('success', "Message sent");
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($sMSOut);
-            $em->flush();
+            $sMSOut->setReceivedOn($now);
+            $this->em()->persist($sMSOut);
+            $this->em()->flush();
 
             return $this->redirectToRoute('sms_out_index');
         }
@@ -89,11 +97,27 @@ class SMSOutController extends Controller
     public function delete(Request $request, SMSOut $sMSOut): Response
     {
         if ($this->isCsrfTokenValid('delete'.$sMSOut->getId(), $request->request->get('_token'))) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($sMSOut);
+            $this->em()->remove($sMSOut);
             $em->flush();
         }
 
         return $this->redirectToRoute('sms_out_index');
     }
+
+    private function fetchAllContacts(){
+        $contacts_list = [];
+        $contacts = $this->em()->getRepository('App:Contact')
+            ->findAll();
+        foreach($contacts as $contact){
+            $contacts_list[] = $contact->getNumber();
+        }
+        $contacts_string = implode("+", $contacts_list);
+        return $contacts_string;
+    }
+
+    private function em(){
+        $em = $this->getDoctrine()->getManager();
+        return $em;
+    }
+
 }

@@ -1,28 +1,11 @@
 <h2>Received Messages</h2>
-<table border="1">
-<tr>
-	<td>Code</td>
-	<td>Client Name</td>
-	<td>Client Phone</td>
-	<td>Amount</td>
-	<td>Balance</td>
-	<td>Date</td>
-	<td>SMS Origin</td>
-	<td>Whole Message</td>
-	<td>Status</td>
-</tr>
-{% for message in messages %}
-	<tr>
-		<td>{{message.confirmationCode}}</td>
-		<td>{{message.clientName}}</td>
-		<td>{{message.phoneNumber}}</td>
-		<td>{{message.amountReceived}}</td>
-		<td>{{message.balance}}</td>
-		<td>{{message.receivedOn|date("d/m/Y h:i:s")}}</td>
-		<td>{{message.smsOrigin}}</td>
-		<td>{{message.wholeSms}}</td>
-		<td>{{message.status}}</td>
-
-	</tr>
+{% for message in sorted_messages %}
+	<a href="{{path('chat', {'number': message.smsOrigin})}}">{{message.smsOrigin}}</a><br />
 {% endfor %}
-</table>
+
+<h2>Actions:</h2>
+<a href="{{ path('sms_out_new') }}">Send new message</a><br />
+<a href="{{ path('sms_out_index') }}">Sent messages</a><br />
+<a href="{{ path('contact_index') }}">Bulk messaging</a><br />
+<a href="{{ path('receive_sms', {'sms_origin': '0736600033', 'message': "Hey over there"}) }}">Receive a mock message</a><br />
+<a href="{{ path('clear_messages') }}">Delete all messages<br />

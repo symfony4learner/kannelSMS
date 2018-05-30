@@ -17,9 +17,14 @@ class SMSOut
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=15)
+     * @ORM\Column(type="text")
      */
     private $send_to;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $received_on;
 
     /**
      * @ORM\Column(type="text")
@@ -54,4 +59,18 @@ class SMSOut
 
         return $this;
     }
+    
+    public function getReceivedOn(): ?\DateTimeInterface
+    {
+        return $this->received_on;
+    }
+
+    public function setReceivedOn(\DateTimeInterface $received_on): self
+    {
+        $this->received_on = $received_on;
+
+        return $this;
+    }
+
+
 }

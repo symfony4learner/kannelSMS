@@ -3,20 +3,21 @@
 namespace App\Service;
 
 use Psr\Log\LoggerInterface;
-
+use Symfony\Component\Config\Definition\Exception\Exception;
 class SendMessage
 {
-	private $logger;
+        
+        private $logger;
 
-	public function __construct(LoggerInterface $logger)
-	{
-		$this->logger = $logger;
-	}
+        public function __construct(LoggerInterface $logger)
+        {
+        	$this->logger = $logger;
+        }
 
-	public function sendMessage($phone_no, $message)
-	{
-		$clean_message = str_replace(" ", "+", $message);
-		
+        public function sendMessage($phone_no, $message)
+        {
+        	$clean_message = str_replace(" ", "+", $message);
+        	
         try {
             $ch = curl_init();
 
@@ -24,8 +25,8 @@ class SendMessage
             if ($ch === false) {
                 throw new Exception('failed to initialize');
             }
-
-            curl_setopt($ch, CURLOPT_URL, "http://127.0.0.1:13013/cgi-bin/sendsms?username=kanneluser&password=kannelpass&to=$phone_no&text=$clean_message");
+            $clean_url = "http://127.0.0.1:13013/cgi-bin/sendsms?username=kanneluser&password=kannelpass&to=$phone_no&text=$clean_message";
+            curl_setopt($ch, CURLOPT_URL, $clean_url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             // curl_setopt(/* ... */);
 
@@ -48,8 +49,9 @@ class SendMessage
                 E_USER_ERROR);
 
         }
-		$this->logger->info('sent a message to '.$phone_no.': '.$message);
-        return $message;
-		// return $content;
-	}
+        $this->logger->info('sent a message to '.$phone_no.': '.$message);
+        // return $message;
+        return $content;
+
+        }
 }

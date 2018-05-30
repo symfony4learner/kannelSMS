@@ -1,0 +1,18 @@
+<h2>{{data.number}}</h2>
+{{ form_start(form) }}
+	{{ form_widget(form.send_to, {'attr': {'style': 'display:none' }} ) }}    
+    {{ form_widget(form.message) }}
+	<button class="btn">{{ button_label|default('REPLY') }}</button>
+{{ form_end(form) }}
+<table>
+	<tr>
+		<th>Date & Time</th>
+		<th>Message</th>
+	</tr>
+	{% for message in data.messages_in %}
+		<tr>
+			<td>{{message.receivedOn|date("d/m/Y h:i:s")}}</td>
+			<td>{{message.wholeSms}}</td>
+		</tr>
+	{% endfor %}
+</table>

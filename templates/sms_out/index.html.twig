@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Send SMS{% endblock %}
+{% block title %}Sent SMS{% endblock %}
 
 {% block body %}
-    <h1>Send SMS</h1>
+    <h1>Sent SMS</h1>
 
     <table border="1" class="table">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Send to</th>
+                <th>Sent to</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -31,8 +31,11 @@
         </tbody>
     </table>
 
+<h2>Actions:</h2>
+
     <a href="{{ path('sms_out_new') }}">Send new message</a><br />
-    <a href="{{ path('list_messages') }}">Mpesa received messages</a><br />
+    <a href="{{ path('list_messages') }}">Received messages</a><br />
     <a href="{{ path('receive_sms', {'sms_origin': '0736600033', 'message': "BS49OR20Z Confirmed.You have received Ksh20.00 from MICHAEL SOMEONE 254705285959 on 15/10/11 at 11:52 AM New M-PESA balance is Ksh100.00"}) }}">Receive a mock message</a><br />
+    <a href="{{ path('clear_messages') }}">Delete all messages</a><br />
     {# <a href="{{ path('generate_codes', {'qty': 2000} ) }}">Generate 2000 codes</a> #}
 {% endblock %}
